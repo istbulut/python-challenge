@@ -1,0 +1,64 @@
+import os
+import csv
+
+bank_path = os.path.join("Resources","budget_data.csv")
+
+month_count = 0
+running_cost_total = 0
+change_total = 0
+previous_number = None
+
+greatest_increase = 0
+greatest_increase_month = None
+greatest_decrease = 0
+greatest_decrease_month = None
+
+with open(bank_path) as csv_file:
+    csv_reader = csv.reader(csv_file, delimiter=",")
+    csv_header = next(csv_file)
+    #print(f"header:{csv_header}")
+
+    for row in csv_reader:
+        month = row[0]
+        number = float(row[1])
+
+        running_cost_total += number
+
+        if previous_number is not None:
+            change = number - previous_number
+            change_total += change
+
+            if change > 0 and change > greatest_increase:
+                greatest_increase = change
+                greatest_increase_month = month
+            elif change < 0 and change < greatest_decrease:
+                greatest_decrease = change
+                greatest_decrease_month = month
+
+        month_count += 1
+        previous_number = number
+        
+average_change=change_total /(month_count-1)
+average_change = "{:.3f}".format(average_change)
+       
+             
+        
+print("Financial Anaysis") 
+print("--------------------")
+print("Total Months: ", month_count)
+print("Total: ", running_cost_total)
+print("Average Change: ", average_change)
+print(
+    "Greatest Increase in Profits: ",
+    greatest_increase_month,
+    "(",
+    greatest_increase,
+    ")",
+)
+print(
+    "Greatest Decrease in Profits: ",
+    greatest_decrease_month,
+    "(",
+    greatest_decrease,
+    ")",
+)
